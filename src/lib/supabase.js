@@ -12,7 +12,7 @@ export const supabase = isSupabaseConfigured
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true, // needed for the Google OAuth redirect (Phase 2)
+        detectSessionInUrl: true, // needed for the Google OAuth redirect
       },
     })
   : null

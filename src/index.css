@@ -29,3 +29,20 @@ body {
   @apply bg-canvas text-ink font-sans antialiased;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* iOS zooms the page when focusing a field smaller than 16px. */
+@media (max-width: 639px) {
+  :is(input, select, textarea):is(.text-xs, .text-sm) {
+    font-size: 16px !important;
+  }
+}
+
+/* Respect "reduce motion" settings. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

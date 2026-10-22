@@ -1,4 +1,6 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
+import Avatar from './Avatar.jsx'
 
 const tabs = [
   { to: '/', label: 'Home', icon: HomeIcon, end: true },
@@ -8,11 +10,16 @@ const tabs = [
 ]
 
 export default function Layout() {
+  const { profile } = useAuth()
+
   return (
     <div className="mx-auto flex min-h-full max-w-lg flex-col">
       <header className="flex items-center gap-2 px-4 pt-5 pb-3">
         <img src="/icon.svg" alt="" className="h-8 w-8" />
         <span className="text-lg font-bold tracking-tight">Syncora</span>
+        <Link to="/profile" className="ml-auto" aria-label="Your profile">
+          <Avatar name={profile.display_name} url={profile.avatar_url} size={34} />
+        </Link>
       </header>
 
       <main className="flex-1 px-4 pb-28">
