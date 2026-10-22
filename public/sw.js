@@ -6,7 +6,7 @@
 // • Everything else — including all Supabase API/realtime traffic — is
 //   never touched, so data is always live.
 
-const VERSION = 'syncora-v1'
+const VERSION = 'syncora-v2' // bump when icons/shell change
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png']
 
 self.addEventListener('install', (event) => {

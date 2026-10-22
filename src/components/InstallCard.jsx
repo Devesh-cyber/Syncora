@@ -31,7 +31,7 @@ export default function InstallCard({ dismissible = false }) {
   }
 
   return (
-    <section className="flex items-start gap-3 rounded-2xl border border-line bg-surface p-4">
+    <section className="flex items-start gap-3 rounded-2xl bg-surface p-4">
       <img src="/icon-192.png" alt="" className="h-11 w-11 shrink-0 rounded-xl" />
       <div className="min-w-0 flex-1">
         <h2 className="font-semibold">Add Syncora to your home screen</h2>
@@ -45,7 +45,7 @@ export default function InstallCard({ dismissible = false }) {
         )}
         <div className="mt-3 flex gap-2">
           {canPrompt && (
-            <button onClick={install} className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white">
+            <button onClick={install} className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-on-brand">
               Install
             </button>
           )}

@@ -215,10 +215,15 @@ export default function RoomDetail() {
 
       <RoomTasks room={room} currentUserId={user.id} liveKey={liveKey} onChange={() => setActivityKey((k) => k + 1)} />
 
-      <RoomActivity roomId={room.id} meId={user.id} refreshKey={activityKey + liveKey} />
+      <RoomActivity
+        roomId={room.id}
+        meId={user.id}
+        refreshKey={activityKey + liveKey}
+        onCheered={() => setLiveKey((k) => k + 1)}
+      />
 
       <Card>
-        <h2 className="font-semibold">Members</h2>
+        <h2 className="text-lg font-extrabold">Members</h2>
         <ul className="mt-3 divide-y divide-line">
           {room.members.map((m) => (
             <li key={m.id} className="flex items-center gap-3 py-3">
@@ -334,22 +339,20 @@ function RoomHeader({ room, isAdmin, memberCount, onSaved }) {
   }
 
   return (
-    <Card>
-      <div className="flex items-start gap-3">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold break-words">{room.name}</h1>
-          {room.description && <p className="mt-1 text-sm text-muted break-words">{room.description}</p>}
-          <p className="mt-2 text-xs font-medium text-muted">
-            {memberCount} of 20 members
-          </p>
-        </div>
-        {isAdmin && (
-          <button onClick={startEdit} className="rounded-lg px-2 py-1 text-sm font-semibold text-brand">
-            Edit
-          </button>
-        )}
+    <div className="flex items-start gap-3 px-1">
+      <div className="min-w-0 flex-1">
+        <h1 className="text-[32px] leading-[1.05] font-extrabold break-words">{room.name}</h1>
+        <p className="mt-1.5 text-sm text-muted break-words">
+          {room.description ? `${room.description} · ` : ''}
+          {memberCount} {memberCount === 1 ? 'member' : 'members'}
+        </p>
       </div>
-    </Card>
+      {isAdmin && (
+        <button onClick={startEdit} className="mt-1 rounded-lg bg-surface px-3 py-1.5 text-sm font-semibold text-brand">
+          Edit
+        </button>
+      )}
+    </div>
   )
 }
 

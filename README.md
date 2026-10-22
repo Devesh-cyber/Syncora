@@ -5,7 +5,13 @@ A friendly, mobile-first shared productivity space: join a room with a code, kee
 
 Stack: React + Vite, Tailwind CSS v4, Supabase (Auth, Postgres, RLS, Realtime), hosted on Vercel, installable as a PWA.
 
-**Status: Version 1 complete (v1.0.0).** All nine phases are built; next step is the pilot.
+**Status: Version 1 complete (v1.1.0 — Ember theme).** All nine phases are built and the final UI is applied; next step is the pilot.
+
+### Look & feel: "Ember"
+Warm charcoal dark theme with an ember-orange accent, Bricolage Grotesque headings + Inter body.
+- **Tokens** live in `src/index.css` (`@theme`): `canvas`, `surface`, `sunken`, `raised`, `ink`, `muted`, `line`, `brand` + `on-brand`, `brand-soft` + `brand-ink`, `warn`, `danger` + `danger-strong`. Change a colour there and the whole app follows.
+- **Layout pieces:** `syncora.` wordmark header, floating pill nav (active tab shows its label), progress-ring hero on Home, tasks as individual tonal rows with rounded-square checkboxes, member tabs in rooms (`You · 🔥4 / Shivam · 🔥12`), and a **Room feed** with a one-tap **Cheer** on teammates' completed tasks.
+- Native controls (date picker, selects, scrollbars) are dark via `color-scheme: dark`. App icons and the PWA theme colour match.
 
 ---
 

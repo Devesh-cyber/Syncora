@@ -26,7 +26,7 @@ export default function Profile() {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border border-line bg-surface p-5">
+      <section className="rounded-2xl bg-surface p-5">
         <h1 className="mb-5 text-xl font-bold">Profile</h1>
         <ProfileForm
           userId={user.id}
@@ -38,7 +38,7 @@ export default function Profile() {
         />
       </section>
 
-      <section className="rounded-2xl border border-line bg-surface p-5">
+      <section className="rounded-2xl bg-surface p-5">
         <div className="flex items-start gap-4">
           <div className="min-w-0 flex-1">
             <h2 className="font-semibold">Evening reminder</h2>
@@ -69,7 +69,7 @@ export default function Profile() {
 
       <InstallCard />
 
-      <section className="rounded-2xl border border-line bg-surface p-5 text-sm">
+      <section className="rounded-2xl bg-surface p-5 text-sm">
         <div className="flex justify-between gap-4">
           <span className="text-muted">Signed in as</span>
           <span className="truncate font-medium">{user.email}</span>
@@ -90,7 +90,7 @@ export default function Profile() {
           await signOut()
         }}
         disabled={signingOut}
-        className="w-full rounded-xl border border-line bg-surface px-4 py-3 font-semibold text-danger disabled:opacity-60"
+        className="w-full rounded-xl bg-surface px-4 py-3 font-semibold text-danger disabled:opacity-60"
       >
         {signingOut ? 'Signing out…' : 'Sign out'}
       </button>

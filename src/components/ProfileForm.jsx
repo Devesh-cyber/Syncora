@@ -79,7 +79,7 @@ export default function ProfileForm({ userId, initialName, initialAvatar, submit
           <button
             type="button"
             onClick={() => fileInput.current?.click()}
-            className="rounded-lg border border-line bg-surface px-3 py-2 text-sm font-semibold hover:bg-canvas"
+            className="rounded-lg bg-raised px-3 py-2 text-sm font-semibold hover:brightness-125"
           >
             {shownAvatar ? 'Change photo' : 'Add photo'}
           </button>
@@ -106,7 +106,7 @@ export default function ProfileForm({ userId, initialName, initialAvatar, submit
           }}
           maxLength={MAX_NAME}
           autoComplete="nickname"
-          className="mt-1.5 w-full rounded-xl border border-line bg-surface px-4 py-3 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+          className="mt-1.5 w-full rounded-xl border border-transparent bg-sunken px-4 py-3 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
           placeholder="How your crew sees you"
         />
         <span className="mt-1 block text-right text-xs text-muted">
@@ -119,7 +119,7 @@ export default function ProfileForm({ userId, initialName, initialAvatar, submit
       <button
         type="submit"
         disabled={saving || (requireChange && !dirty)}
-        className="w-full rounded-xl bg-brand px-4 py-3 font-semibold text-white transition-opacity disabled:opacity-50"
+        className="w-full rounded-xl bg-brand px-4 py-3 font-semibold text-on-brand transition-colors disabled:bg-raised disabled:text-muted"
       >
         {saving ? 'Saving…' : submitLabel}
       </button>

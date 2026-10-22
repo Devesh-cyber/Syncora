@@ -35,7 +35,7 @@ export default function ConfirmDialog({ open, title, body, confirmLabel = 'Confi
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center" onClick={() => !busy && onClose()}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center" onClick={() => !busy && onClose()}>
       <div
         role="dialog"
         aria-modal="true"
@@ -59,7 +59,7 @@ export default function ConfirmDialog({ open, title, body, confirmLabel = 'Confi
           <button
             onClick={handleConfirm}
             disabled={busy}
-            className={`flex-1 rounded-xl px-4 py-3 font-semibold text-white disabled:opacity-60 ${danger ? 'bg-danger' : 'bg-brand'}`}
+            className={`flex-1 rounded-xl px-4 py-3 font-semibold disabled:opacity-60 ${danger ? 'bg-danger-strong text-white' : 'bg-brand text-on-brand'}`}
           >
             {busy ? 'Working…' : confirmLabel}
           </button>

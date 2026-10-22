@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Avatar from '../Avatar.jsx'
-import { Card, ErrorNote, Spinner } from '../ui.jsx'
+import { ErrorNote, Spinner } from '../ui.jsx'
 import TaskItem from './TaskItem.jsx'
 import TaskComposer from './TaskComposer.jsx'
 import TaskEditor from './TaskEditor.jsx'
@@ -26,6 +26,7 @@ export default function RoomTasks({ room, currentUserId, liveKey = 0, onChange =
   const [streaks, setStreaks] = useState({})
   const [error, setError] = useState(null)
   const [editing, setEditing] = useState(null)
+  const [selectedId, setSelectedId] = useState(currentUserId)
 
   const refreshStreaks = useCallback(() => {
     getRoomStreaks(room.id)
@@ -66,6 +67,9 @@ export default function RoomTasks({ room, currentUserId, liveKey = 0, onChange =
       }
     })
   }, [tasks, room.members, currentUserId])
+
+  // The open tab; falls back to you if the selected member left.
+  const selected = groups.find((g) => g.member.id === selectedId) ?? groups[0]
 
   const replaceTask = (updated) => setTasks((list) => list.map((t) => (t.id === updated.id ? updated : t)))
 
@@ -144,63 +148,66 @@ export default function RoomTasks({ room, currentUserId, liveKey = 0, onChange =
         </div>
       )}
 
-      {groups.map(({ member, pending, completed }) => (
+      {/* Member tabs: you first, then everyone else, each with their streak. */}
+      <div role="tablist" aria-label="Members" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+        {groups.map(({ member, pending }) => {
+          const active = member.id === selected?.member.id
+          const isMe = member.id === currentUserId
+          const streak = streaks[member.id]?.current_streak ?? 0
+          return (
+            <button
+              key={member.id}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setSelectedId(member.id)}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full py-1.5 pr-3.5 pl-1.5 text-[13px] font-bold transition-colors ${
+                active ? 'bg-brand text-on-brand' : 'bg-surface text-ink hover:bg-raised'
+              }`}
+            >
+              <Avatar name={member.display_name} url={member.avatar_url} size={24} />
+              <span className="max-w-[7rem] truncate">{isMe ? 'You' : member.display_name.split(/\s+/)[0]}</span>
+              {streak > 0 && <span className={active ? '' : 'text-brand'}>· 🔥{streak}</span>}
+              {streak === 0 && pending.length > 0 && <span className={active ? '' : 'text-muted'}>· {pending.length}</span>}
+            </button>
+          )
+        })}
+      </div>
+
+      {selected && (
         <MemberTasks
-          key={member.id}
-          member={member}
-          isMe={member.id === currentUserId}
-          streak={streaks[member.id]}
-          pending={pending}
-          completed={completed}
+          key={selected.member.id}
+          member={selected.member}
+          isMe={selected.member.id === currentUserId}
+          pending={selected.pending}
+          completed={selected.completed}
           footerFor={footerFor}
           onAdd={handleAdd}
           onToggle={handleToggle}
           onOpen={setEditing}
         />
-      ))}
+      )}
 
       <TaskEditor task={editing} onClose={() => setEditing(null)} onSave={handleSave} onDelete={handleDelete} />
     </div>
   )
 }
 
-function MemberTasks({ member, isMe, streak, pending, completed, footerFor, onAdd, onToggle, onOpen }) {
+function MemberTasks({ member, isMe, pending, completed, footerFor, onAdd, onToggle, onOpen }) {
   const [showDone, setShowDone] = useState(completed.length > 0 && completed.length <= 3)
   const total = pending.length + completed.length
-  const current = streak?.current_streak ?? 0
 
   return (
-    <Card className="!p-4">
-      <div className="flex items-center gap-3">
-        <Avatar name={member.display_name} url={member.avatar_url} size={32} />
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold">{isMe ? 'Your tasks' : member.display_name}</h3>
-          <p className="text-xs font-medium text-muted">
-            {pending.length} pending · {completed.length} done
-          </p>
-        </div>
-        {current > 0 && (
-          <span
-            className="shrink-0 rounded-full bg-warn/10 px-2 py-1 text-xs font-bold text-warn"
-            title={`${current}-day streak${streak.done_today ? '' : ' — nothing done yet today'}`}
-          >
-            🔥 {current}
-          </span>
-        )}
-      </div>
-
-      {isMe && (
-        <div className="mt-3">
-          <TaskComposer onAdd={onAdd} />
-        </div>
-      )}
+    <section role="tabpanel" aria-label={isMe ? 'Your tasks' : `${member.display_name}'s tasks`} className="space-y-2">
+      {isMe && <TaskComposer onAdd={onAdd} />}
 
       {total === 0 && (
-        <p className="mt-3 text-sm text-muted">{isMe ? 'Nothing here yet — add your first task above.' : 'No tasks yet.'}</p>
+        <p className="rounded-2xl bg-surface px-4 py-4 text-sm text-muted">
+          {isMe ? 'Nothing here yet — add your first task above.' : `${member.display_name} hasn't added any tasks yet.`}
+        </p>
       )}
 
       {pending.length > 0 && (
-        <ul className="mt-2">
+        <ul className="space-y-2">
           {pending.map((t) => (
             <TaskItem key={t.id} task={t} editable={isMe} onToggle={onToggle} onOpen={onOpen} />
           ))}
@@ -208,17 +215,17 @@ function MemberTasks({ member, isMe, streak, pending, completed, footerFor, onAd
       )}
 
       {completed.length > 0 && (
-        <div className="mt-1 border-t border-line pt-2">
+        <>
           <button
             onClick={() => setShowDone((v) => !v)}
-            className="flex w-full items-center justify-between py-1 text-sm font-semibold text-muted hover:text-ink"
+            className="flex w-full items-center justify-between px-1 pt-2 text-xs font-semibold tracking-wide text-muted uppercase hover:text-ink"
             aria-expanded={showDone}
           >
-            <span>Completed ({completed.length})</span>
+            <span>Completed · {completed.length}</span>
             <span aria-hidden="true">{showDone ? '▾' : '▸'}</span>
           </button>
           {showDone && (
-            <ul>
+            <ul className="space-y-2">
               {completed.map((t) => (
                 <TaskItem
                   key={t.id}
@@ -231,8 +238,8 @@ function MemberTasks({ member, isMe, streak, pending, completed, footerFor, onAd
               ))}
             </ul>
           )}
-        </div>
+        </>
       )}
-    </Card>
+    </section>
   )
 }

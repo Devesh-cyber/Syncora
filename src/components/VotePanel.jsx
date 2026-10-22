@@ -58,7 +58,7 @@ export default function VotePanel({ request, room, meId, onVote, onCancel }) {
 
       <ul className="mt-3 flex flex-wrap gap-2">
         {members.map((m) => (
-          <li key={m.id} className="flex items-center gap-1.5 rounded-full border border-line bg-surface py-0.5 pr-2.5 pl-0.5 text-xs">
+          <li key={m.id} className="flex items-center gap-1.5 rounded-full bg-surface py-0.5 pr-2.5 pl-0.5 text-xs">
             <Avatar name={m.display_name} url={m.avatar_url} size={20} />
             <span className="max-w-[7rem] truncate">{m.id === meId ? 'You' : m.display_name.split(/\s+/)[0]}</span>
             <span aria-label={votes[m.id] === true ? 'voted yes' : votes[m.id] === false ? 'voted no' : 'not voted'}>
@@ -79,7 +79,7 @@ export default function VotePanel({ request, room, meId, onVote, onCancel }) {
           <button
             onClick={() => run(onCancel)}
             disabled={busy}
-            className="w-full rounded-xl border border-line bg-surface px-4 py-3 font-semibold disabled:opacity-50"
+            className="w-full rounded-xl bg-surface px-4 py-3 font-semibold disabled:opacity-50"
           >
             {busy ? 'Working…' : 'Cancel the vote'}
           </button>
@@ -90,7 +90,7 @@ export default function VotePanel({ request, room, meId, onVote, onCancel }) {
               disabled={busy}
               aria-pressed={myVote === false}
               className={`rounded-xl px-4 py-3 font-semibold disabled:opacity-50 ${
-                myVote === false ? 'bg-brand text-white' : 'border border-line bg-surface'
+                myVote === false ? 'bg-brand text-on-brand' : 'bg-surface'
               }`}
             >
               {myVote === false ? 'Keeping it ✓' : 'No, keep it'}
@@ -100,7 +100,7 @@ export default function VotePanel({ request, room, meId, onVote, onCancel }) {
               disabled={busy}
               aria-pressed={myVote === true}
               className={`rounded-xl px-4 py-3 font-semibold disabled:opacity-50 ${
-                myVote === true ? 'bg-danger text-white' : 'border border-danger/40 bg-surface text-danger'
+                myVote === true ? 'bg-danger-strong text-white' : 'border border-danger/40 bg-surface text-danger'
               }`}
             >
               {myVote === true ? 'Voted delete ✓' : 'Yes, delete'}

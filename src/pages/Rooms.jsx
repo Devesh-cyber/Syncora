@@ -40,10 +40,10 @@ export default function Rooms() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Link to="/rooms/new" className="rounded-xl bg-brand px-4 py-3 text-center font-semibold text-white">
+        <Link to="/rooms/new" className="rounded-xl bg-brand px-4 py-3 text-center font-semibold text-on-brand">
           + Create room
         </Link>
-        <Link to="/rooms/join" className="rounded-xl border border-line bg-surface px-4 py-3 text-center font-semibold">
+        <Link to="/rooms/join" className="rounded-xl bg-surface px-4 py-3 text-center font-semibold">
           Join with code
         </Link>
       </div>
@@ -68,7 +68,7 @@ export default function Rooms() {
             <li key={room.id}>
               <Link
                 to={`/rooms/${room.id}`}
-                className="block rounded-2xl border border-line bg-surface p-4 transition hover:border-brand/40"
+                className="block rounded-2xl bg-surface p-4 transition hover:bg-raised"
               >
                 <div className="flex items-center gap-2">
                   <h2 className="truncate font-semibold">{room.name}</h2>

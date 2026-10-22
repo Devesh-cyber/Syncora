@@ -34,9 +34,11 @@ export default function SignIn() {
   return (
     <div className="flex min-h-full items-center justify-center px-6">
       <div className="w-full max-w-sm text-center">
-        <img src="/icon.svg" alt="" className="mx-auto h-16 w-16" />
-        <h1 className="mt-4 text-3xl font-bold tracking-tight">Syncora</h1>
-        <p className="mt-2 text-muted">Your goals, your crew, your progress.</p>
+        <img src="/icon.svg" alt="" className="mx-auto h-16 w-16 rounded-2xl" />
+        <h1 className="mt-5 text-[44px] leading-none font-extrabold">
+          syncora<span className="text-brand">.</span>
+        </h1>
+        <p className="mt-3 text-muted">Your goals, your crew, your progress.</p>
 
         {!configured ? (
           <p className="mt-8 rounded-xl bg-warn/10 px-4 py-3 text-sm text-warn">
@@ -46,7 +48,7 @@ export default function SignIn() {
           <button
             onClick={handleGoogle}
             disabled={busy}
-            className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 font-semibold shadow-sm transition hover:bg-canvas disabled:opacity-60"
+            className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-surface px-4 py-3.5 font-semibold transition hover:bg-raised disabled:opacity-60"
           >
             <GoogleIcon />
             {busy ? 'Opening Google…' : 'Continue with Google'}

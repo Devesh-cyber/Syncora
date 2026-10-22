@@ -159,28 +159,24 @@ export default function Home() {
 
   return (
     <div className="space-y-4">
-      {/* Hero */}
-      <section className="rounded-2xl bg-brand p-5 text-white">
-        <p className="text-sm text-brand-soft">{greeting()},</p>
-        <h1 className="mt-0.5 text-2xl font-bold">{firstName}</h1>
-        {rooms.length > 0 && (
-          <>
-            <p className="mt-3 text-sm text-white/85">
-              {totalToday === 0
-                ? 'Nothing on your plate for today.'
-                : todo.length === 0
-                  ? `All ${doneToday.length} of today's tasks done 🎉`
-                  : `${doneToday.length} of ${totalToday} done today`}
-              {later.length > 0 && <span className="text-white/60"> · {later.length} coming up</span>}
-            </p>
-            {totalToday > 0 && (
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/20" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
-                <div className="h-full rounded-full bg-white transition-all" style={{ width: `${progress}%` }} />
-              </div>
-            )}
-            <StreakLine streak={streak} />
-          </>
-        )}
+      {/* Hero: progress ring + greeting + streak */}
+      <section className="flex items-center gap-5 rounded-3xl bg-surface p-5">
+        {rooms.length > 0 && <ProgressRing done={doneToday.length} total={totalToday} />}
+        <div className="min-w-0 flex-1">
+          <p className="text-sm text-muted">{greeting()}</p>
+          <h1 className="mt-0.5 truncate text-[30px] leading-tight font-extrabold">{firstName}</h1>
+          {rooms.length > 0 && (
+            <>
+              <StreakLine streak={streak} />
+              <p className="mt-0.5 text-xs text-muted">
+                {totalToday > 0 && todo.length === 0 ? "All of today's tasks done 🎉" : null}
+                {totalToday > 0 && todo.length === 0 && later.length > 0 ? ' · ' : null}
+                {later.length > 0 ? `${later.length} coming up` : null}
+                {totalToday === 0 && later.length === 0 ? 'Nothing on your plate today' : null}
+              </p>
+            </>
+          )}
+        </div>
       </section>
 
       {error && <ErrorNote>{error}</ErrorNote>}
@@ -195,7 +191,7 @@ export default function Home() {
           <h2 className="mt-2 font-semibold">Start with a room</h2>
           <p className="mt-1 text-sm text-muted">Tasks live inside rooms. Create one for your crew, or join a friend's.</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <Link to="/rooms/new" className="rounded-xl bg-brand px-4 py-3 font-semibold text-white">
+            <Link to="/rooms/new" className="rounded-xl bg-brand px-4 py-3 font-semibold text-on-brand">
               Create room
             </Link>
             <Link to="/rooms/join" className="rounded-xl border border-line px-4 py-3 font-semibold">
@@ -206,18 +202,19 @@ export default function Home() {
       ) : (
         <>
           {/* Today */}
-          <Card className="!p-4">
-            <h2 className="font-semibold">Today</h2>
-            <div className="mt-3">
-              <TaskComposer onAdd={handleAdd} rooms={rooms} roomId={selectedRoomId} onRoomChange={handleRoomChange} />
-            </div>
+          <section className="space-y-2">
+            <TaskComposer onAdd={handleAdd} rooms={rooms} roomId={selectedRoomId} onRoomChange={handleRoomChange} />
+
+            <h2 className="px-1 pt-3 text-xl font-extrabold">Today</h2>
 
             {todo.length === 0 && doneToday.length === 0 && (
-              <p className="mt-3 text-sm text-muted">No tasks for today. Add one above, or enjoy the breather.</p>
+              <p className="rounded-2xl bg-surface px-4 py-4 text-sm text-muted">
+                No tasks for today. Add one above, or enjoy the breather.
+              </p>
             )}
 
             {todo.length > 0 && (
-              <ul className="mt-2">
+              <ul className="space-y-2">
                 {todo.map((t) => (
                   <TaskItem key={t.id} task={t} roomName={t.room?.name} editable onToggle={handleToggle} onOpen={setEditing} />
                 ))}
@@ -225,9 +222,9 @@ export default function Home() {
             )}
 
             {doneToday.length > 0 && (
-              <div className="mt-1 border-t border-line pt-2">
-                <p className="py-1 text-sm font-semibold text-muted">Done today ({doneToday.length})</p>
-                <ul>
+              <>
+                <p className="px-1 pt-2 text-xs font-semibold tracking-wide text-muted uppercase">Done today · {doneToday.length}</p>
+                <ul className="space-y-2">
                   {doneToday.map((t) => (
                     <TaskItem
                       key={t.id}
@@ -240,34 +237,36 @@ export default function Home() {
                     />
                   ))}
                 </ul>
-              </div>
+              </>
             )}
 
             {later.length > 0 && (
-              <div className="mt-1 border-t border-line pt-2">
+              <>
                 <button
                   onClick={() => setShowLater((v) => !v)}
                   aria-expanded={showLater}
-                  className="flex w-full items-center justify-between py-1 text-sm font-semibold text-muted hover:text-ink"
+                  className="flex w-full items-center justify-between px-1 pt-2 text-xs font-semibold tracking-wide text-muted uppercase hover:text-ink"
                 >
-                  <span>Coming up ({later.length})</span>
+                  <span>Coming up · {later.length}</span>
                   <span aria-hidden="true">{showLater ? '▾' : '▸'}</span>
                 </button>
                 {showLater && (
-                  <ul>
+                  <ul className="space-y-2">
                     {later.map((t) => (
                       <TaskItem key={t.id} task={t} roomName={t.room?.name} editable onToggle={handleToggle} onOpen={setEditing} />
                     ))}
                   </ul>
                 )}
-              </div>
+              </>
             )}
-          </Card>
+          </section>
 
           {/* Rooms */}
           <div>
             <div className="mb-2 flex items-center justify-between px-1">
-              <h2 className="font-semibold">Your rooms</h2>
+              <h2 className="text-sm font-semibold text-muted" style={{ fontFamily: 'inherit', letterSpacing: 0 }}>
+                Your rooms
+              </h2>
               <Link to="/rooms" className="text-sm font-semibold text-brand">
                 All
               </Link>
@@ -277,9 +276,9 @@ export default function Home() {
                 <Link
                   key={r.id}
                   to={`/rooms/${r.id}`}
-                  className="w-40 shrink-0 rounded-2xl border border-line bg-surface p-3 transition hover:border-brand/40"
+                  className="w-44 shrink-0 rounded-2xl bg-surface px-4 py-3 transition hover:bg-raised"
                 >
-                  <p className="truncate font-semibold">{r.name}</p>
+                  <p className="truncate font-bold">{r.name}</p>
                   <p className="mt-1 text-xs text-muted">
                     {r.memberCount} {r.memberCount === 1 ? 'member' : 'members'}
                   </p>
@@ -295,9 +294,9 @@ export default function Home() {
 
           {/* Recent activity */}
           {events && events.length > 0 && (
-            <Card className="!py-3">
+            <Card className="!border-0 !py-3">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold">Recent activity</h2>
+                <h2 className="text-lg font-extrabold">Recent activity</h2>
                 <Link to="/activity" className="text-sm font-semibold text-brand">
                   See all
                 </Link>
@@ -326,21 +325,48 @@ function StreakLine({ streak }) {
   const { current_streak: current, best_streak: best, done_today: doneToday } = streak
 
   if (current === 0) {
-    return (
-      <p className="mt-3 text-xs text-white/70">
-        Finish a task today to start a streak 🔥{best > 0 && <> · Best: {best} days</>}
-      </p>
-    )
+    return <p className="mt-2 text-sm font-bold text-brand">Finish a task to start a streak 🔥</p>
   }
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
-      <span className="rounded-full bg-white/15 px-2.5 py-1 text-sm font-bold">
-        🔥 {current}-day streak
-      </span>
-      <span className="text-xs text-white/70">
-        {doneToday ? 'Today counted ✓' : 'Finish a task today to keep it going'}
-        {best > current && <> · Best: {best}</>}
-      </span>
+    <>
+      <p className="mt-2 text-sm font-bold text-brand">🔥 {current} {current === 1 ? 'day' : 'days'} in a row</p>
+      <p className="text-xs text-muted">
+        {doneToday ? 'Today counted ✓' : 'Finish one today to keep it'}
+        {best > current && <> · Best {best}</>}
+      </p>
+    </>
+  )
+}
+
+// "2/5 today" ring. Empty day → a quiet "0" ring.
+function ProgressRing({ done, total }) {
+  const r = 40
+  const circumference = 2 * Math.PI * r
+  const ratio = total === 0 ? 0 : done / total
+  return (
+    <div className="relative h-24 w-24 shrink-0" role="img" aria-label={`${done} of ${total} done today`}>
+      <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+        <circle cx="48" cy="48" r={r} fill="none" stroke="var(--color-raised)" strokeWidth="10" />
+        <circle
+          cx="48"
+          cy="48"
+          r={r}
+          fill="none"
+          stroke="var(--color-brand)"
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray={`${ratio * circumference} ${circumference}`}
+          transform="rotate(-90 48 48)"
+          style={{ transition: 'stroke-dasharray 0.4s ease' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="font-display text-[26px] leading-none font-extrabold">
+          {done}
+          <span className="text-muted">/{total}</span>
+        </span>
+        <span className="mt-0.5 text-[10px] text-muted">today</span>
+      </div>
     </div>
   )
 }

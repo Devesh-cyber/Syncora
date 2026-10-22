@@ -62,7 +62,7 @@ export default function TaskEditor({ task, onClose, onSave, onDelete }) {
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="min-w-0 flex-1 rounded-xl border border-line bg-surface px-4 py-3 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="min-w-0 flex-1 rounded-xl border border-transparent bg-sunken px-4 py-3 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
             />
             {dueDate && (
               <button type="button" onClick={() => setDueDate('')} className="rounded-xl px-3 text-sm font-semibold text-muted hover:text-ink">
@@ -96,7 +96,7 @@ export default function TaskEditor({ task, onClose, onSave, onDelete }) {
                 type="button"
                 onClick={() => run(() => onDelete(task))}
                 disabled={busy}
-                className="rounded-lg bg-danger px-3 py-2 text-sm font-semibold text-white"
+                className="rounded-lg bg-danger-strong px-3 py-2 text-sm font-semibold text-white"
               >
                 Delete
               </button>

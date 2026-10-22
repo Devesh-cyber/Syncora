@@ -37,7 +37,7 @@ export default function TaskComposer({ onAdd, rooms = null, roomId = null, onRoo
       type="button"
       onClick={() => setDueDate(dueDate === value ? null : value)}
       className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-        dueDate === value ? 'border-brand bg-brand text-white' : 'border-line bg-surface text-muted hover:text-ink'
+        dueDate === value ? 'border-brand bg-brand text-on-brand' : 'border-transparent bg-raised text-muted hover:text-ink'
       }`}
     >
       {label}
@@ -58,22 +58,29 @@ export default function TaskComposer({ onAdd, rooms = null, roomId = null, onRoo
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-line bg-canvas p-2">
+    <form onSubmit={handleSubmit} className="rounded-2xl bg-surface p-1.5">
       <div className="flex items-center gap-2">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={MAX_TASK_TITLE}
-          placeholder="Add a task…"
+          placeholder="What's next?"
           aria-label="New task"
-          className="min-w-0 flex-1 bg-transparent px-2 py-2 outline-none placeholder:text-muted"
+          className="min-w-0 flex-1 bg-transparent px-2.5 py-2.5 text-[15px] outline-none"
         />
         <button
           type="submit"
           disabled={busy || !title.trim()}
-          className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+          aria-label="Add task"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand text-on-brand transition-colors disabled:bg-raised disabled:text-muted"
         >
-          {busy ? '…' : 'Add'}
+          {busy ? (
+            '…'
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          )}
         </button>
       </div>
 
@@ -84,7 +91,7 @@ export default function TaskComposer({ onAdd, rooms = null, roomId = null, onRoo
             value={roomId ?? ''}
             onChange={(e) => onRoomChange(e.target.value)}
             aria-label="Room for this task"
-            className="max-w-[14rem] truncate rounded-full border border-line bg-surface px-3 py-1 text-xs font-semibold outline-none focus:border-brand"
+            className="max-w-[14rem] truncate rounded-full border border-transparent bg-raised px-3 py-1 text-xs font-semibold outline-none focus:border-brand"
           >
             {rooms.map((r) => (
               <option key={r.id} value={r.id}>
@@ -105,7 +112,7 @@ export default function TaskComposer({ onAdd, rooms = null, roomId = null, onRoo
               type="button"
               onClick={openPicker}
               className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-                customPicked ? 'border-brand bg-brand text-white' : 'border-line bg-surface text-muted hover:text-ink'
+                customPicked ? 'border-brand bg-brand text-on-brand' : 'border-transparent bg-raised text-muted hover:text-ink'
               }`}
             >
               {customPicked ? dueInfo(dueDate).label : 'Pick date'}

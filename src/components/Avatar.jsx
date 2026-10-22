@@ -9,12 +9,13 @@ function initialsOf(name = '') {
 }
 
 // Shows the photo if there is one, otherwise the person's initials.
-export default function Avatar({ name, url, size = 40, className = '' }) {
+// rounded: 'full' (circle, default) or 'xl' (rounded square, used in the header).
+export default function Avatar({ name, url, size = 40, className = '', rounded = 'full' }) {
   const [failed, setFailed] = useState(false)
   useEffect(() => setFailed(false), [url])
 
   const style = { width: size, height: size }
-  const base = `shrink-0 rounded-full ${className}`
+  const base = `shrink-0 ${rounded === 'xl' ? 'rounded-xl' : 'rounded-full'} ${className}`
 
   if (url && !failed) {
     return (
@@ -32,7 +33,7 @@ export default function Avatar({ name, url, size = 40, className = '' }) {
   return (
     <div
       style={{ ...style, fontSize: Math.max(11, size * 0.38) }}
-      className={`${base} flex items-center justify-center bg-brand-soft font-semibold text-brand-ink`}
+      className={`${base} flex items-center justify-center bg-brand-soft font-bold text-brand-ink`}
       aria-label={name ? `${name}'s avatar` : undefined}
     >
       {initialsOf(name)}

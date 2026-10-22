@@ -73,7 +73,7 @@ export default function Activity() {
         key={id ?? 'all'}
         onClick={() => setParams(id ? { room: id } : {}, { replace: true })}
         className={`shrink-0 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
-          active ? 'border-brand bg-brand text-white' : 'border-line bg-surface text-muted hover:text-ink'
+          active ? 'border-brand bg-brand text-on-brand' : 'border-transparent bg-surface text-muted hover:text-ink'
         }`}
       >
         {label}

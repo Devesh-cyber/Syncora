@@ -1,22 +1,28 @@
 @import "tailwindcss";
 
-/* Syncora design tokens — use as bg-brand, text-ink, border-line, etc. */
+/* Syncora design tokens — "Ember" dark theme.
+   Use as bg-canvas, bg-surface, text-ink, text-muted, border-line, bg-brand + text-on-brand, … */
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  --color-brand: #0f766e;        /* teal 700 — primary actions */
-  --color-brand-soft: #ccfbf1;   /* teal 100 — highlights, chips */
-  --color-brand-ink: #134e4a;    /* teal 900 — text on soft */
+  --color-brand: #ff8a3d;        /* ember orange — primary actions, progress, done */
+  --color-on-brand: #2a1405;     /* text/icons on brand */
+  --color-brand-soft: #3a2416;   /* tinted chips, avatar fills */
+  --color-brand-ink: #ffb98a;    /* text on brand-soft */
 
-  --color-canvas: #f8faf9;       /* app background */
-  --color-surface: #ffffff;      /* cards */
-  --color-ink: #1c2521;          /* main text */
-  --color-muted: #64716b;        /* secondary text */
-  --color-line: #e3e8e5;         /* borders, dividers */
+  --color-canvas: #151210;       /* app background */
+  --color-surface: #1e1a17;      /* cards */
+  --color-sunken: #191613;       /* completed rows, inputs */
+  --color-raised: #2a221c;       /* chips, nav bar, hover */
+  --color-ink: #f4eee7;          /* main text */
+  --color-muted: #a99d92;        /* secondary text */
+  --color-line: #2c2622;         /* borders, dividers */
 
-  --color-done: #16a34a;         /* completed checkmark */
-  --color-warn: #d97706;         /* overdue */
-  --color-danger: #dc2626;       /* destructive actions */
+  --color-done: #ff8a3d;         /* completed checkmark (same as brand) */
+  --color-warn: #ffb366;         /* overdue, votes */
+  --color-danger: #f87171;       /* destructive text */
+  --color-danger-strong: #dc2626;/* destructive buttons (white text) */
 }
 
 html,
@@ -25,9 +31,24 @@ body,
   height: 100%;
 }
 
+html {
+  color-scheme: dark; /* native date pickers, selects, scrollbars match */
+}
+
 body {
   @apply bg-canvas text-ink font-sans antialiased;
   -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+::placeholder {
+  color: var(--color-muted);
+  opacity: 0.8;
 }
 
 /* iOS zooms the page when focusing a field smaller than 16px. */

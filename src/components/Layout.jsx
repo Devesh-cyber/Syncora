@@ -9,39 +9,56 @@ const tabs = [
   { to: '/profile', label: 'Profile', icon: ProfileIcon },
 ]
 
+export function Wordmark({ className = '' }) {
+  return (
+    <span className={`font-display text-[22px] font-extrabold tracking-tight ${className}`}>
+      syncora<span className="text-brand">.</span>
+    </span>
+  )
+}
+
 export default function Layout() {
   const { profile } = useAuth()
 
   return (
     <div className="mx-auto flex min-h-full max-w-lg flex-col">
-      <header className="flex items-center gap-2 px-4 pt-5 pb-3">
-        <img src="/icon.svg" alt="" className="h-8 w-8" />
-        <span className="text-lg font-bold tracking-tight">Syncora</span>
+      <header className="flex items-center gap-2 px-5 pt-5 pb-3">
+        <Link to="/" aria-label="Syncora home">
+          <Wordmark />
+        </Link>
         <Link to="/profile" className="ml-auto" aria-label="Your profile">
-          <Avatar name={profile.display_name} url={profile.avatar_url} size={34} />
+          <Avatar name={profile.display_name} url={profile.avatar_url} size={36} rounded="xl" />
         </Link>
       </header>
 
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex-1 px-4 pb-32">
         <Outlet />
       </main>
 
-      {/* Bottom nav — mobile-first, stays usable on desktop */}
-      <nav className="fixed inset-x-0 bottom-0 border-t border-line bg-surface/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-        <ul className="mx-auto grid max-w-lg grid-cols-4">
+      {/* Floating pill nav: the active tab shows its label, the rest are icons. */}
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-0 bottom-0 z-30 px-4 pb-[calc(env(safe-area-inset-bottom)+14px)]"
+      >
+        <ul className="mx-auto grid h-[62px] max-w-lg grid-cols-4 gap-1 rounded-[20px] bg-raised p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.45)]">
           {tabs.map(({ to, label, icon: Icon, end }) => (
-            <li key={to}>
+            <li key={to} className="contents">
               <NavLink
                 to={to}
                 end={end}
+                aria-label={label}
                 className={({ isActive }) =>
-                  `flex flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors ${
-                    isActive ? 'text-brand' : 'text-muted hover:text-ink'
+                  `flex items-center justify-center gap-1.5 rounded-[14px] text-[13px] font-bold transition-colors ${
+                    isActive ? 'bg-brand text-on-brand' : 'text-muted hover:text-ink'
                   }`
                 }
               >
-                <Icon />
-                {label}
+                {({ isActive }) => (
+                  <>
+                    <Icon />
+                    {isActive && <span>{label}</span>}
+                  </>
+                )}
               </NavLink>
             </li>
           ))}
@@ -53,12 +70,12 @@ export default function Layout() {
 
 function svgProps() {
   return {
-    width: 22,
-    height: 22,
+    width: 21,
+    height: 21,
     viewBox: '0 0 24 24',
     fill: 'none',
     stroke: 'currentColor',
-    strokeWidth: 2,
+    strokeWidth: 2.1,
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
     'aria-hidden': true,

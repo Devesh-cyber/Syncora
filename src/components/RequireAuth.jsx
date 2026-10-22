@@ -30,7 +30,7 @@ export default function RequireAuth({ allowUnonboarded = false, children }) {
     return (
       <FullScreenMessage title="Couldn't load your profile" body={profileError}>
         <div className="mt-6 flex gap-3">
-          <button onClick={reloadProfile} className="flex-1 rounded-xl bg-brand px-4 py-3 font-semibold text-white">
+          <button onClick={reloadProfile} className="flex-1 rounded-xl bg-brand px-4 py-3 font-semibold text-on-brand">
             Try again
           </button>
           <button onClick={signOut} className="flex-1 rounded-xl border border-line px-4 py-3 font-semibold">

@@ -44,7 +44,7 @@ export default function JoinRoom() {
             spellCheck={false}
             inputMode="text"
             autoFocus={!code}
-            className="w-full rounded-xl border border-line bg-surface px-4 py-4 text-center font-mono text-2xl font-semibold tracking-[0.2em] uppercase outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+            className="w-full rounded-xl border border-transparent bg-sunken px-4 py-4 text-center font-mono text-2xl font-semibold tracking-[0.2em] uppercase outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
           />
           <ErrorNote>{error}</ErrorNote>
           <PrimaryButton type="submit" disabled={busy || code.length !== 8} className="w-full">

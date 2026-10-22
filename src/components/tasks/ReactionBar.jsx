@@ -18,7 +18,7 @@ export default function ReactionBar({ reactions = {}, meId, names = {}, canReact
       {used.map((emoji) => {
         const mine = reactions[emoji].includes(meId)
         const pill = `flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${
-          mine ? 'border-brand/40 bg-brand-soft text-brand-ink' : 'border-line bg-surface text-muted'
+          mine ? 'border-brand/50 bg-brand-soft text-brand-ink' : 'border-transparent bg-raised text-ink'
         }`
         return canReact ? (
           <button key={emoji} onClick={() => onToggle(emoji, mine)} title={who(emoji)} aria-pressed={mine} className={pill}>
@@ -36,7 +36,7 @@ export default function ReactionBar({ reactions = {}, meId, names = {}, canReact
 
       {canReact &&
         (picking ? (
-          <div className="flex items-center gap-0.5 rounded-full border border-line bg-surface px-1 py-0.5">
+          <div className="flex items-center gap-0.5 rounded-full bg-raised px-1 py-0.5">
             {EMOJIS.map((emoji) => {
               const mine = reactions[emoji]?.includes(meId)
               return (
@@ -61,7 +61,7 @@ export default function ReactionBar({ reactions = {}, meId, names = {}, canReact
           <button
             onClick={() => setPicking(true)}
             aria-label="Add a reaction"
-            className="rounded-full border border-dashed border-line px-2 py-0.5 text-xs font-semibold text-muted hover:border-brand hover:text-brand"
+            className="rounded-full border border-dashed border-[#4a3f36] px-2 py-0.5 text-xs font-semibold text-muted hover:border-brand hover:text-brand"
           >
             + Cheer
           </button>
