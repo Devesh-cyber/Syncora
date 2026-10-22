@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* Syncora design tokens — use as bg-brand, text-ink, border-line, etc. */
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand: #0f766e;        /* teal 700 — primary actions */
+  --color-brand-soft: #ccfbf1;   /* teal 100 — highlights, chips */
+  --color-brand-ink: #134e4a;    /* teal 900 — text on soft */
+
+  --color-canvas: #f8faf9;       /* app background */
+  --color-surface: #ffffff;      /* cards */
+  --color-ink: #1c2521;          /* main text */
+  --color-muted: #64716b;        /* secondary text */
+  --color-line: #e3e8e5;         /* borders, dividers */
+
+  --color-done: #16a34a;         /* completed checkmark */
+  --color-warn: #d97706;         /* overdue */
+  --color-danger: #dc2626;       /* destructive actions */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-canvas text-ink font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
