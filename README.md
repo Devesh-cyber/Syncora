@@ -1,305 +1,198 @@
-# Syncora
+<div align="center">
 
-Your goals, your crew, your progress.
-A friendly, mobile-first shared productivity space: join a room with a code, keep your own task list, see everyone's progress, cheer each other on.
+<img src="public/icon-192.png" width="72" alt="Syncora app icon" />
 
-Stack: React + Vite, Tailwind CSS v4, Supabase (Auth, Postgres, RLS, Realtime), hosted on Vercel, installable as a PWA.
+# syncora.
 
-**Status: Version 1 complete (v1.1.0 — Ember theme).** All nine phases are built and the final UI is applied; next step is the pilot.
+**Your goals, your crew, your progress.**
 
-### Look & feel: "Ember"
-Warm charcoal dark theme with an ember-orange accent, Bricolage Grotesque headings + Inter body.
-- **Tokens** live in `src/index.css` (`@theme`): `canvas`, `surface`, `sunken`, `raised`, `ink`, `muted`, `line`, `brand` + `on-brand`, `brand-soft` + `brand-ink`, `warn`, `danger` + `danger-strong`. Change a colour there and the whole app follows.
-- **Layout pieces:** `syncora.` wordmark header, floating pill nav (active tab shows its label), progress-ring hero on Home, tasks as individual tonal rows with rounded-square checkboxes, member tabs in rooms (`You · 🔥4 / Shivam · 🔥12`), and a **Room feed** with a one-tap **Cheer** on teammates' completed tasks.
-- Native controls (date picker, selects, scrollbars) are dark via `color-scheme: dark`. App icons and the PWA theme colour match.
+A mobile-first shared productivity app for people working toward the same goal.
+Everyone keeps their own task list, the whole room can see who's done what, and teammates cheer each other on.
+
+React 19 · Vite · Tailwind CSS v4 · Supabase (Postgres, Auth, RLS, Realtime) · PWA · Vercel
+
+</div>
+
+![Syncora — sign in, Home, a room, and the room feed](docs/screenshots/overview.png)
 
 ---
 
-## Build phases
+## Why
 
-| # | Phase | Done when |
+Study groups, hackathon teams and side-project crews usually plan separately even when they share a goal. Nobody knows what the others are working on or what's already done. Full project-management tools are overkill for that.
+
+Syncora sits in between: **individual ownership, shared visibility, friendly accountability.** You only ever edit your own tasks, but your room sees your progress, and a checkmark is enough to get a 🔥 from a friend.
+
+## Features
+
+**Rooms**
+- Create a room for a shared goal, invite people with an 8-character code or a join link (look-alike characters like `0/O` and `1/l` are left out)
+- Up to 20 members per room; join as many rooms as you like
+- The admin can rename the room, regenerate the code, and remove members
+
+**Tasks**
+- Add tasks with an optional due date (Today / Tomorrow / pick a date) and notes
+- Everyone in the room sees everyone's tasks and status; only the owner can change them
+- Overdue tasks are flagged and float to the top
+
+**Home dashboard**
+- Today's tasks from *all* your rooms, tagged by room, with a "2/5 today" progress ring
+- "Coming up" for future-dated work, room shortcuts, and recent activity
+
+**Motivation, not pressure**
+- **Streaks:** one completed task per local day keeps it going (rules below)
+- **Cheers:** react 👏 🔥 💪 🎉 to a teammate's completed task, right on the task or from the room feed
+- **Evening reminder:** a gentle in-app nudge after 6 PM if today's tasks are still open or your streak is at risk. Once a day, and you can switch it off
+- No leaderboards, no points
+
+**Fair room deletion**
+- An admin alone in a room can delete it instantly
+- Otherwise the room **votes** for 48 hours: it's deleted only if more than half say yes
+- If an admin wants to *leave* and the vote fails, admin passes to the longest-standing member
+
+**Live and installable**
+- Every screen updates in real time when someone else changes something
+- Installable as an app on Android, iPhone and desktop; opens offline with a clear "you're offline" strip
+- Google sign-in
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/member-tab.png" width="200" alt="Viewing a teammate's tasks in a room" /><br /><sub>Member tabs with streaks</sub></td>
+    <td align="center"><img src="docs/screenshots/vote.png" width="200" alt="An open vote to delete a room" /><br /><sub>Deletion vote</sub></td>
+    <td align="center"><img src="docs/screenshots/activity.png" width="200" alt="Activity feed across rooms" /><br /><sub>Activity feed</sub></td>
+    <td align="center"><img src="docs/screenshots/profile.png" width="200" alt="Profile and reminder settings" /><br /><sub>Profile &amp; reminder</sub></td>
+  </tr>
+</table>
+
+---
+
+## Tech stack
+
+| Layer | Choice | Why |
 |---|---|---|
-| **1** | **Setup** — Vite, Tailwind, Supabase client, routing, nav shell, PWA manifest | App runs locally and shows "Supabase connected" |
-| **2** | **Auth + profiles** — Google sign-in, profile auto-created, edit name/avatar, route guard | Two Google accounts have separate profiles |
-| **3** | **Rooms** — create, join by code (cap 20), members list, regenerate code, remove member, leave | Second account joins by code; outsiders can't read room data |
-| **4** | **Tasks** — add/edit/delete, check/uncheck, due dates, ownership rules | Members edit only their own tasks |
-| **5** | **Dashboards** + activity feed — personal Today view, room view, feed | Each account sees the correct data |
-| **6** | **Reactions + streaks** — 👏🔥💪🎉 on completed tasks, derived streak | Unchecking removes reactions/events; streak is predictable |
-| **7** | **Deletion votes** — delete/leave requests, majority vote, 48h expiry, admin transfer | Vote passes/fails/expires correctly |
-| **8** | **Realtime + polish** — live updates, loading/empty/error states | A second device sees changes without refresh |
-| **9** | **PWA + reminder banner + deploy** — PNG icons, install prompt, Vercel | Installed on a phone and used by the pilot group |
+| Frontend | React 19 + Vite 8, React Router 7 | Fast dev loop, simple SPA |
+| Styling | Tailwind CSS v4 with design tokens | One file (`src/index.css`) controls the whole theme |
+| Auth | Supabase Auth (Google OAuth) | No passwords to manage |
+| Database | Supabase Postgres | Relational data: rooms ↔ members ↔ tasks |
+| Permissions | Postgres **Row-Level Security** + `security definer` functions | Rules are enforced in the database, not just hidden in the UI |
+| Realtime | Supabase Realtime (`postgres_changes`) | Live updates that respect RLS |
+| Storage | Supabase Storage (`avatars` bucket) | Profile photos, cropped to 256 px on the device first |
+| App shell | PWA manifest + small service worker | Home-screen install, offline open |
+| Hosting | Vercel | Static build, SPA rewrites |
 
-Each database phase adds one file in `supabase/migrations/` that you run in the Supabase SQL editor, in order.
+There is **no custom backend server**. The browser talks to Supabase directly, and everything sensitive (joining, removing members, voting, completion timestamps, streaks) runs inside Postgres.
 
----
+## How it works
 
-## Phase 1 setup
+### Data model
 
-### 1. Install and run
-
-```bash
-npm install
-cp .env.example .env.local   # Windows: copy .env.example .env.local
-npm run dev
+```
+profiles ──< room_members >── rooms ──< deletion_requests ──< deletion_votes
+    │                           │
+    └──────────< tasks >────────┘
+                   │
+                   ├──< reactions
+                   └──< activity_events
 ```
 
-Open http://localhost:5173. You should see the Home screen and a yellow "Supabase not configured" banner — that's expected until step 2.
+| Table | Holds |
+|---|---|
+| `profiles` | Display name, avatar, time zone, reminder setting (created automatically on first sign-in) |
+| `rooms` | Name, description, admin, join code |
+| `room_members` | Who is in which room, and since when |
+| `tasks` | Title, notes, due date, `completed_at` (`null` = pending) |
+| `reactions` | One row per person per emoji per task |
+| `activity_events` | The room feed: completions, cheers, joins, leaves, votes |
+| `deletion_requests`, `deletion_votes` | Open/closed room-deletion votes |
 
-### 2. Create the Supabase project
+### Security model
 
-1. https://supabase.com → **New project** → name it `syncora`. Pick the region closest to you (Mumbai = `ap-south-1`).
-2. **Project Settings → API**: copy the **Project URL** and the **anon public** key into `.env.local`.
-3. Restart `npm run dev`. The banner should turn green: **Supabase connected**.
+All tables have RLS on. Highlights:
 
-### 3. Prepare Google sign-in (used in Phase 2 — easier to do now)
+- **Rooms are invisible to non-members:** their tasks, members, feed and votes included. Profiles are visible only to people you share a room with.
+- **Only the owner can write a task**, enforced with RLS plus column-level grants (a task can't be moved to another room or handed to someone else).
+- **`completed_at` is set by the server clock**, so a completion can't be backdated to fake a streak.
+- **Joining, leaving, removing, voting and deleting** go through `security definer` functions that check permissions, the 20-member cap (with a row lock so two people can't join at the same moment), and vote rules.
+- The admin **can't remove members while a vote is open**, so "no" voters can't be kicked out.
+- Avatar uploads are limited to the user's own storage folder, images only, 2 MB max.
 
-**Google Cloud Console** (https://console.cloud.google.com):
-1. Create a project (e.g. `syncora`).
-2. **APIs & Services → OAuth consent screen** → External → fill in app name, your email. Add yourself (and pilot friends) as **test users** while it's in Testing mode.
-3. **Credentials → Create credentials → OAuth client ID** → type **Web application**.
-   - **Authorized JavaScript origins:** `http://localhost:5173`
-   - **Authorized redirect URIs:** `https://<your-project-ref>.supabase.co/auth/v1/callback`
-4. Copy the **Client ID** and **Client secret**.
+### Streak rule
 
-**Supabase dashboard:**
-1. **Authentication → Sign In / Providers → Google** → enable, paste the Client ID and secret, save.
-2. **Authentication → URL Configuration**:
-   - **Site URL:** `http://localhost:5173`
-   - **Redirect URLs:** add `http://localhost:5173/**`
-   (Your Vercel URL gets added here in Phase 9.)
-
-### 4. Phase 1 checklist
-
-- [ ] `npm run dev` runs with no errors
-- [ ] Bottom nav switches between Home / Rooms / Activity / Profile
-- [ ] Home shows **Supabase connected** (green)
-- [ ] `npm run build` succeeds
-- [ ] Google provider enabled in Supabase (ready for Phase 2)
-
----
-
-## Phase 2 — Auth + profiles
-
-### 1. Run the migration
-Supabase → **SQL Editor** → New query → paste all of `supabase/migrations/002_profiles.sql` → **Run**.
-It creates the `profiles` table, the signup trigger, the RLS rules and the `avatars` storage bucket.
-
-Check: **Table Editor** shows `profiles`; **Storage** shows an `avatars` bucket.
-
-### 2. Run the app
-```bash
-npm install
-npm run dev
-```
-
-### 3. Phase 2 checklist
-- [ ] Opening http://localhost:5173 while signed out lands on **/signin**
-- [ ] **Continue with Google** → Google → back to the **Welcome** screen with your Google name and photo prefilled
-- [ ] Change your name / photo on Welcome → **Continue** → Home says "Good …, <first name>"
-- [ ] Refreshing keeps you signed in; Welcome doesn't show again
-- [ ] Profile tab: change name or photo → **Save changes** → "Saved ✓", header avatar updates
-- [ ] **Remove** photo → initials show instead
-- [ ] Sign out → back to /signin
-- [ ] Sign in with a **second Google account** (add it as a test user on the OAuth consent screen first) → it gets its own Welcome + profile
-- [ ] Supabase **Table Editor → profiles** has two rows, both `onboarded = true`
-
-**If Google sign-in fails:** check the redirect URI in Google Cloud is exactly `https://<project-ref>.supabase.co/auth/v1/callback`, and that `http://localhost:5173/**` is in Supabase → Authentication → URL Configuration → Redirect URLs.
-
----
-
-## Phase 3 — Rooms
-
-### 1. Run the migration
-Supabase → SQL Editor → paste all of `supabase/migrations/003_rooms.sql` → Run.
-It adds `rooms`, `room_members`, `activity_events` (filled now, shown in Phase 5), the RLS rules, and the room functions (`create_room`, `join_room`, `regenerate_join_code`, `remove_member`, `leave_room`, `delete_room`).
-
-It also widens profile visibility: you can now see the profiles of people who share a room with you.
-
-### 2. Phase 3 checklist
-Use two Google accounts — e.g. a normal window (A) and an incognito window (B).
-- [ ] A: Rooms → **Create room** → lands on the room page with an 8-character code, A is **Admin**
-- [ ] A: **Copy code** works (and **Share** on a phone)
-- [ ] B: Rooms → **Join with code** → type it in lowercase or with a dash — still works
-- [ ] B: a wrong code shows "That room code doesn't match any room."
-- [ ] Both see 2 members with names + avatars; B has no Remove / Edit / New code buttons
-- [ ] A: **Edit** name/description → saved; B sees it after refresh
-- [ ] A: **New code** → old code stops working for a third account
-- [ ] A: **Remove** B → B's Rooms list no longer shows the room; opening its URL says "Room not found"
-- [ ] B rejoins, then **Leave room** → gone from B's list
-- [ ] A, alone in the room: **Delete room** works (Phase 7 adds the vote for rooms with others)
-- [ ] Shared link: open `http://localhost:5173/rooms/join?code=XXXXXXXX` signed out → after sign-in the code is prefilled
-
----
-
-## Phase 4 — Tasks
-
-### 1. Run the migration
-Supabase → SQL Editor → paste all of `supabase/migrations/004_tasks.sql` → Run.
-It adds the `tasks` table, RLS (everyone in the room reads, only the owner writes), and triggers that:
-- set `completed_at` from the server clock (no backdating),
-- log `task_completed` and erase it again if you uncheck,
-- delete a person's tasks when they leave or are removed.
-
-### 2. Phase 4 checklist
-Two accounts again (A normal window, B incognito), both in the same room.
-- [ ] A: room page → **Your tasks** → type a task → **Add**. Try the **Today / Tomorrow / Pick date** chips
-- [ ] A: a task with a past due date shows an orange **Overdue** chip and sorts to the top
-- [ ] A: tap the circle → turns green, moves to **Completed**; tap again → back to pending
-- [ ] A: tap a task's text → edit sheet → change title / notes / date → **Save**; **Delete task** asks once more
-- [ ] B (refresh): sees A's tasks under A's name with status, but **can't** tick or open them
-- [ ] B: adds their own task → A sees it (live since Phase 8)
-- [ ] A removes B (or B leaves) → B's tasks disappear from the room
-- [ ] Supabase **Table Editor → activity_events**: a `task_completed` row appears on check and disappears on uncheck
-
----
-
-## Phase 5 — Dashboards + activity feed
-
-**No SQL this phase.** The activity log has been filling since Phase 3; this phase displays it.
-
-### Checklist
-- [ ] **Home** opens after login: greeting, "X of Y done today" + progress bar
-- [ ] **Today** lists your pending tasks from *all* rooms that are overdue, due today, or undated — each tagged with its room
-- [ ] Add a task from Home → pick the room in the **In:** dropdown; it remembers your last room
-- [ ] Tick a task on Home → moves to **Done today**, progress bar fills; it's also ticked inside the room
-- [ ] Future-dated tasks sit under **Coming up**
-- [ ] **Your rooms** strip shows each room with your pending count; tapping opens the room
-- [ ] **Recent activity** on Home shows the last 5 events across rooms → **See all** opens the Activity tab
-- [ ] **Activity** tab: room filter chips (when you're in 2+ rooms), "Load older" after 30 events
-- [ ] Room page now has **Recent activity**; it refreshes when you tick a task there
-- [ ] Account with no rooms: Home shows "Start with a room" with Create / Join buttons
-- [ ] Uncheck a task → its "completed" line disappears from the feeds
-
----
-
-## Phase 6 — Reactions + streaks
-
-### 1. Run the migration
-Supabase → SQL Editor → paste all of `supabase/migrations/006_reactions_streaks.sql` → Run.
-(There's no 005 file — Phase 5 needed no SQL.)
-
-It adds the `reactions` table, the streak functions (`get_my_streak`, `get_room_streaks`), and updates two Phase 4 triggers so unchecking a task / leaving a room also clears reactions.
-
-### 2. Streak rule (documented, as the spec asked)
-- A day counts when you complete **at least one task** on that **local calendar day** (your profile time zone).
-- Your streak stays alive through today until midnight, even before you've done anything today.
-- Unchecking or deleting a completed task removes its credit — the streak is recalculated, never stored.
+- A day counts when you complete **at least one task** on that **local calendar day** (your profile's time zone).
+- Your streak stays alive until midnight, even before you've done anything today.
+- Unchecking or deleting a completed task removes its credit. The streak is **calculated on the fly, never stored**.
 - One global streak across all rooms.
 
-### 3. Phase 6 checklist
-- [ ] Home banner: "Finish a task today to start a streak" → tick a task → **🔥 1-day streak · Today counted ✓**
-- [ ] Untick it → back to the "start a streak" line
-- [ ] Room page: each member with a streak shows a **🔥 N** badge
-- [ ] B: on A's **completed** task → **+ Cheer** → pick 🔥 → pill shows **🔥 1**; tap the pill again to remove it
-- [ ] B can't cheer A's *pending* tasks; A can't cheer their own tasks (but sees the pills, also on Home → Done today)
-- [ ] Feed shows "B cheered 🔥 on your “…”"; removing the cheer removes that line
-- [ ] A unticks the task → its cheers and feed lines disappear
-- [ ] Banner reads "All N of today's tasks done 🎉 · M coming up" when future tasks exist
+### Realtime
+
+Each screen subscribes to the tables it shows (`useLiveRefresh`), waits ~350 ms to batch bursts, then quietly refetches. It also refetches when the tab regains focus or the device comes back online, so a phone that slept catches up.
 
 ---
 
-## Phase 7 — Deletion votes
+## Getting started
 
-### 1. Run the migration
-Supabase → SQL Editor → paste all of `supabase/migrations/007_deletion_votes.sql` → Run.
+### Prerequisites
+- Node.js 20.19+ or 22.12+ (required by Vite 8)
+- A free [Supabase](https://supabase.com) project
+- A Google Cloud project, for the OAuth client
 
-**Optional:** to also close expired votes in the background (not just when someone opens the room), enable **pg_cron** under Database → Extensions, then run the one `cron.schedule(...)` line at the bottom of the file.
+### 1. Install
 
-### 2. The rules
-- Admin taps **Delete room** or **Leave room**. Alone in the room → happens immediately.
-- Otherwise a 48-hour vote opens. The admin's yes is automatic; everyone else votes and can change their mind.
-- **Passes** as soon as yes votes are more than half of current members → room deleted.
-- **Fails** as soon as that can't happen anymore, or at 48 hours.
-  - Delete vote fails → room carries on.
-  - Leave vote fails → the longest-standing member becomes admin, the old admin leaves (their tasks go).
-- Admin can cancel. Nobody can be removed while a vote is open. A member who leaves mid-vote has their vote dropped.
+```bash
+git clone https://github.com/Devesh-cyber/syncora.git
+cd syncora
+npm install
+cp .env.example .env.local
+```
 
-### 3. Phase 7 checklist (three accounts makes it interesting)
-- [ ] Admin alone in a room → **Delete room** deletes immediately
-- [ ] With 3 members: admin → **Delete room** → **Start vote** → orange vote panel at the top, "2 of 3 needed"
-- [ ] Rooms list shows **🗳️ Vote open** on that room; **Remove** buttons are hidden
-- [ ] Member B votes **Yes, delete** → room is deleted for everyone
-- [ ] New room, same setup: B and C both vote **No** → panel disappears, feed says the vote didn't pass
-- [ ] Admin → **Leave room** → B and C vote No → the earliest-joined member becomes **Admin**, the old admin is gone
-- [ ] Admin → **Cancel the vote** → panel disappears, feed says it was cancelled
-- [ ] Expiry test: in Table Editor set an open request's `expires_at` to the past → open the room → it's settled
+Fill in `.env.local` from Supabase → **Project Settings → API**:
 
----
+```env
+VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<anon public key>
+```
 
-## Phase 8 — Realtime + polish
+### 2. Set up the database
 
-### 1. Run the migration
-Supabase → SQL Editor → paste all of `supabase/migrations/008_realtime.sql` → Run.
-It adds the app's tables to the `supabase_realtime` publication. Realtime respects RLS, so people only get changes they're allowed to see. Safe to run twice.
+In Supabase → **SQL Editor**, run each file in `supabase/migrations/` **in order**:
 
-Check: Database → Publications → `supabase_realtime` lists rooms, room_members, tasks, reactions, activity_events, deletion_requests, deletion_votes.
+| File | Adds |
+|---|---|
+| `002_profiles.sql` | Profiles, signup trigger, avatars bucket |
+| `003_rooms.sql` | Rooms, members, join codes, activity log |
+| `004_tasks.sql` | Tasks and their rules |
+| `006_reactions_streaks.sql` | Cheers and streak functions |
+| `007_deletion_votes.sql` | Room deletion votes |
+| `008_realtime.sql` | Realtime publication |
 
-### 2. How it works
-Each screen opens one realtime channel for what it shows. When something changes it waits ~0.35 s (to batch bursts) and quietly refetches — no spinner. It also refetches when you come back to the tab/app or reconnect, so a phone that slept catches up.
+The numbers follow the build phases; phases 1, 5 and 9 needed no SQL, so there are no 001, 005 or 009 files. Optional: the last lines of `007_deletion_votes.sql` show how to close expired votes in the background with `pg_cron`. Without it, a vote is settled when someone next opens the room.
 
-### 3. Phase 8 checklist — two windows side by side (A and B in the same room)
-- [ ] B adds / ticks / unticks / edits / deletes a task → A's room page updates within a second
-- [ ] B cheers A's task → A's room page **and** A's Home show the pill; A's feed shows the line
-- [ ] B joins / leaves the room → member list updates for A
-- [ ] A starts a delete vote → B's room page shows the vote panel; B's Rooms list shows 🗳️
-- [ ] B votes yes on a 2-person room → A's page shows "Room not found"
-- [ ] Activity tab on A updates while open
-- [ ] Turn Wi-Fi off → black "You're offline" strip; back on → screens refresh
-- [ ] On an iPhone: tapping the "In:" room picker or a date chip doesn't zoom the page
+### 3. Enable Google sign-in
 
----
+1. **Google Cloud Console → APIs & Services → Credentials →** create an **OAuth client ID** (Web application).
+   - Authorized redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`
+2. **Supabase → Authentication → Sign In / Providers → Google:** enable it and paste the client ID and secret.
+3. **Supabase → Authentication → URL Configuration:**
+   - Site URL: `http://localhost:5173`
+   - Redirect URLs: `http://localhost:5173/**`
 
-## Phase 9 — PWA, reminders, deploy
+While the OAuth consent screen is in *Testing* mode, add each person who'll sign in as a test user, or publish the app (basic profile/email scopes don't need Google review).
 
-**No SQL this phase.**
+### 4. Run
 
-### What's new
-- Proper app icons (Android adaptive/maskable, iPhone home-screen icon) and a full manifest
-- A small service worker (production builds only): the installed app opens offline instead of showing the browser's error page. It never caches Supabase data — everything you see is live.
-- **Install card** on Home (dismissible) and Profile: real **Install** button on Android/desktop Chrome; Share → Add to Home Screen steps on iPhone
-- **Evening reminder** on Home after 6 PM if today's tasks are open or your streak is at risk; once a day, "Not now" hides it until tomorrow; toggle in **Profile**
-- App version shown in Profile
+```bash
+npm run dev       # http://localhost:5173
+npm run build     # production build in dist/
+npm run preview   # serve the build (service worker active)
+```
 
-### Deploy to Vercel
-1. **Push to GitHub.** Create a repo (e.g. `syncora`) and push this folder. `.env.local` is gitignored — keep it that way.
-2. **Import on Vercel.** vercel.com → Add New → Project → pick the repo. Framework: **Vite** (auto-detected). Build command `npm run build`, output `dist`.
-3. **Environment variables** (Project → Settings → Environment Variables): add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` with the same values as `.env.local`. Deploy.
-4. **Tell Supabase about the new address.** Authentication → URL Configuration:
-   - **Site URL:** `https://<your-app>.vercel.app`
-   - **Redirect URLs:** add `https://<your-app>.vercel.app/**` (keep the localhost one for development)
-5. **Google sign-in for friends.** Google Cloud → OAuth consent screen. While it's in **Testing**, only listed test users can sign in — add each pilot friend's Gmail, *or* click **Publish app** (with just the basic profile/email scopes this doesn't need Google review).
-   The redirect URI stays `https://<project-ref>.supabase.co/auth/v1/callback` — nothing to change there.
-6. Open the Vercel URL on your phone → sign in → install it from the card.
+## Deploying to Vercel
 
-`vercel.json` already handles page refreshes on deep links, keeps `sw.js` uncached, and caches built assets forever (their filenames change on every build).
+1. Push the repo to GitHub and import it on [Vercel](https://vercel.com). The **Vite** preset is detected automatically.
+2. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` under **Settings → Environment Variables**, then deploy.
+3. In Supabase → **Authentication → URL Configuration**, set the Site URL to your Vercel URL and add `https://<your-app>.vercel.app/**` to Redirect URLs.
 
-### Phase 9 checklist
-- [ ] `npm run build && npm run preview` → Chrome DevTools → Application → Manifest shows no errors and the icons
-- [ ] Deployed URL loads; Google sign-in works there
-- [ ] Android/desktop Chrome: **Install** button works → app opens in its own window
-- [ ] iPhone Safari: Share → Add to Home Screen → teal icon, opens full screen
-- [ ] After 6 PM with an open task: reminder shows on Home → **Not now** hides it until tomorrow
-- [ ] Profile → turn **Evening reminder** off → no banner
-- [ ] Airplane mode → open the installed app → it opens with the offline strip
-
----
-
-## Pilot acceptance checklist (from the spec, section 14)
-Run with 2–6 people before adding anything new.
-- [ ] Sign up, log in, set a display name — without help
-- [ ] Add an optional profile image
-- [ ] Create a room and share it by code/link
-- [ ] Another account joins
-- [ ] Creator can delete the room (alone: instantly; with others: by vote) and remove members, with confirmation
-- [ ] A normal member can't remove members or delete the room
-- [ ] Members manage only their own tasks; everyone sees everyone's status
-- [ ] Login lands on the personal dashboard
-- [ ] Streak behaves predictably (rule documented in Phase 6)
-- [ ] Personal and room history are available (Home, Activity tab, room Completed + feed)
-- [ ] Usable on phone and desktop
-- [ ] Non-members can't read room data
-- [ ] Reminders are optional and not excessive
-- [ ] Note what people struggle with → that's the V2 list
+`vercel.json` already handles deep-link refreshes, keeps `sw.js` uncached, and caches hashed build assets for a year.
 
 ---
 
@@ -307,33 +200,42 @@ Run with 2–6 people before adding anything new.
 
 ```
 src/
-  lib/supabase.js          Supabase client (reads env vars)
-  components/Layout.jsx    Header + bottom nav shell
-  context/AuthContext.jsx  Session + profile state (useAuth hook)
-  components/RequireAuth.jsx  Route guard: signed out → /signin, new user → /welcome
-  components/ProfileForm.jsx  Name + photo form (Welcome and Profile)
-  lib/avatars.js           Crop/resize photo to 256px, upload to Storage
-  lib/rooms.js             Room queries + RPC calls, join-code formatting
-  components/ui.jsx        Shared buttons, inputs, cards
-  components/ConfirmDialog.jsx  Confirmation for destructive actions
-  components/Sheet.jsx     Bottom-sheet modal
-  components/tasks/        RoomTasks (grouped by member), TaskItem, TaskComposer, TaskEditor
-  lib/tasks.js             Task queries + sorting
-  lib/dates.js             Local dates, due-date labels
-  lib/activity.js          Activity queries + event wording
-  components/ActivityList.jsx  Feed rows (Activity tab, Home, room page)
-  components/RoomActivity.jsx  Latest events for one room
-  components/tasks/ReactionBar.jsx  Cheer pills + emoji picker
-  lib/reactions.js         Reaction queries
-  lib/streaks.js           Streak RPC calls
-  lib/deletion.js          Deletion vote RPC calls + helpers
-  components/VotePanel.jsx Open vote: tally, voters, Yes/No, cancel
-  lib/useLiveRefresh.js    Realtime hook: watch tables → debounced refetch
-  components/OfflineBanner.jsx, ErrorBoundary.jsx  Offline strip, crash screen
-  lib/pwa.js               Install prompt + service worker registration
-  components/InstallCard.jsx, ReminderBanner.jsx  Add-to-home-screen card, evening nudge
-  pages/                   One file per screen
-  index.css                Tailwind + design tokens (bg-brand, text-muted, …)
-supabase/migrations/       SQL files, one per database phase
-public/                    PWA manifest, icons, service worker (sw.js)
+├── pages/                 One file per screen (Home, Rooms, RoomDetail, Activity, Profile, SignIn, …)
+├── components/
+│   ├── tasks/             RoomTasks (member tabs), TaskItem, TaskComposer, TaskEditor, ReactionBar
+│   ├── Layout.jsx         Wordmark header + floating pill nav
+│   ├── VotePanel.jsx      Open deletion vote: tally, voters, Yes/No
+│   ├── RoomActivity.jsx   Room feed with one-tap Cheer
+│   └── …                  Avatar, dialogs, sheets, install card, reminder, offline strip, error boundary
+├── context/AuthContext.jsx   Session + profile (useAuth)
+├── lib/                   Supabase queries per feature, dates, realtime hook, PWA helpers
+└── index.css              Tailwind + "Ember" design tokens
+supabase/migrations/       SQL, run in order
+public/                    Manifest, icons, service worker
+docs/                      Screenshots and the phase-by-phase build log
 ```
+
+## Theming
+
+The UI uses the **Ember** dark theme: warm charcoal, an ember-orange accent, Bricolage Grotesque headings and Inter body text. Every colour is a token in the `@theme` block of `src/index.css` (`canvas`, `surface`, `sunken`, `raised`, `ink`, `muted`, `line`, `brand`, `on-brand`, `warn`, `danger`, …), so changing a value there restyles the whole app.
+
+## Roadmap
+
+Deliberately left out of V1, possibly later depending on how the pilot goes:
+
+- Private tasks and per-task visibility
+- Recurring tasks (e.g. "daily revision")
+- Calendar view
+- Real push notifications (the in-app reminder comes first)
+- Comments on tasks
+- Weekly progress summaries
+
+## How it was built
+
+Syncora was built in nine phases, each ending in a working, tested checkpoint: setup → auth → rooms → tasks → dashboards → cheers & streaks → deletion votes → realtime → PWA & deploy. Every SQL migration was tested against Postgres with Supabase-style roles, covering both the allowed and the blocked actions. The full log, with each phase's checklist, is in [`docs/BUILD_LOG.md`](docs/BUILD_LOG.md).
+
+---
+
+<div align="center">
+Made by <a href="https://github.com/Devesh-cyber">Devesh Kadam</a>
+</div>
